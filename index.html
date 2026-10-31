@@ -1,0 +1,945 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Petualangan Bola Ceria - PJOK Kelas 4 SD</title>
+    <!-- Tailwind CSS CDN -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <!-- Canvas Confetti CDN -->
+    <script src="https://cdn.jsdelivr.net/npm/canvas-confetti@1.6.0/dist/confetti.browser.min.js"></script>
+    <!-- Font Awesome Icons -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <!-- Google Fonts: Fredoka & Quicksand -->
+    <link href="https://fonts.googleapis.com/css2?family=Fredoka:wght@400;600;700&family=Quicksand:wght@500;700&display=swap" rel="stylesheet">
+    
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    colors: {
+                        brandYellow: '#FFD166',
+                        brandGreen: '#06D6A0',
+                        brandBlue: '#118AB2',
+                        brandRed: '#EF476F',
+                        brandOrange: '#FF9F1C',
+                        brandPurple: '#8338EC'
+                    },
+                    fontFamily: {
+                        fredoka: ['Fredoka', 'sans-serif'],
+                        quicksand: ['Quicksand', 'sans-serif']
+                    }
+                }
+            }
+        }
+    </script>
+    <style>
+        body {
+            font-family: 'Quicksand', sans-serif;
+            background: linear-gradient(135deg, #e0f7fa 0%, #fff9c4 100%);
+            min-height: 100vh;
+            user-select: none;
+        }
+        .font-title {
+            font-family: 'Fredoka', cursive;
+        }
+        .btn-bounce:active {
+            transform: scale(0.95);
+        }
+        .animate-float {
+            animation: float 3s ease-in-out infinite;
+        }
+        @keyframes float {
+            0%, 100% { transform: translateY(0px) rotate(0deg); }
+            50% { transform: translateY(-10px) rotate(3deg); }
+        }
+    </style>
+</head>
+<body class="flex flex-col min-h-screen text-gray-800">
+
+    <!-- HEADER / NAVIGATION BAR -->
+    <header class="bg-white/80 backdrop-blur-md border-b-4 border-brandYellow sticky top-0 z-40 px-4 py-3 shadow-md">
+        <div class="max-w-4xl mx-auto flex justify-between items-center">
+            <div class="flex items-center space-x-2">
+                <span class="text-3xl animate-float">⚽</span>
+                <div>
+                    <h1 class="font-title text-xl md:text-2xl text-brandBlue font-bold leading-none">Petualangan Bola Ceria</h1>
+                    <p class="text-xs text-gray-500 font-bold">PJOK Kelas 4 SD • Gerak Manipulatif</p>
+                </div>
+            </div>
+            <!-- Audio Mute Button -->
+            <button id="btn-sound" onclick="toggleSound()" class="bg-brandYellow hover:bg-yellow-400 text-gray-800 px-3 py-1.5 rounded-full font-bold text-sm shadow flex items-center gap-1.5 transition">
+                <i id="sound-icon" class="fa-solid fa-volume-high"></i>
+                <span id="sound-text" class="hidden sm:inline">Suara: ON</span>
+            </button>
+        </div>
+    </header>
+
+    <!-- MAIN CONTAINER -->
+    <main class="flex-grow flex items-center justify-center p-3 md:p-4">
+        <div class="w-full max-w-4xl">
+
+            <!-- 1. LANDING PAGE / MODE SELECTION -->
+            <div id="screen-welcome" class="bg-white rounded-3xl p-6 md:p-8 shadow-2xl border-4 border-brandBlue text-center relative overflow-hidden">
+                <!-- Decorative Elements -->
+                <div class="absolute -top-10 -left-10 w-28 h-28 bg-brandYellow/30 rounded-full blur-xl"></div>
+                <div class="absolute -bottom-10 -right-10 w-28 h-28 bg-brandGreen/30 rounded-full blur-xl"></div>
+
+                <div class="inline-block bg-brandYellow text-brandBlue px-4 py-1 rounded-full font-bold text-sm mb-4 shadow">
+                    🎓 Belajar Sambil Bermain PJOK
+                </div>
+                
+                <h2 class="font-title text-3xl md:text-5xl text-brandBlue font-bold mb-3">
+                    Halo Sahabat Olahraga! 👋
+                </h2>
+                <p class="text-gray-600 font-medium md:text-lg max-w-xl mx-auto mb-6">
+                    Mari menguji kemampuanmu dalam **Pola Gerak Dasar Manipulatif** dengan 4 Bentuk Soal Interaktif!
+                </p>
+
+                <!-- 4 Forms Badge -->
+                <div class="grid grid-cols-1 sm:grid-cols-3 gap-2 max-w-2xl mx-auto mb-6">
+                    <div class="bg-blue-50 border border-blue-200 rounded-xl p-2.5 text-xs font-bold text-blue-800">
+                        1. Pilihan Ganda 📝
+                    </div>
+                    <div class="bg-purple-50 border border-purple-200 rounded-xl p-2.5 text-xs font-bold text-purple-800">
+                        2. PG Kompleks ☑️
+                    </div>
+                    <div class="bg-emerald-50 border border-emerald-200 rounded-xl p-2.5 text-xs font-bold text-emerald-800">
+                        3. Menjodohkan 🔗
+                    </div>
+                </div>
+
+                <!-- Avatar Display -->
+                <div class="flex justify-center items-center gap-6 mb-6">
+                    <div class="text-center">
+                        <div class="w-20 h-20 md:w-24 md:h-24 bg-brandBlue/10 rounded-full flex items-center justify-center border-4 border-brandBlue text-4xl md:text-5xl shadow-md">
+                            👦
+                        </div>
+                        <p class="font-bold text-brandBlue mt-2 text-sm">Pemain 1</p>
+                    </div>
+                    <div class="text-2xl font-bold text-gray-400 font-title">VS</div>
+                    <div class="text-center">
+                        <div class="w-20 h-20 md:w-24 md:h-24 bg-brandRed/10 rounded-full flex items-center justify-center border-4 border-brandRed text-4xl md:text-5xl shadow-md">
+                            👧
+                        </div>
+                        <p class="font-bold text-brandRed mt-2 text-sm">Pemain 2</p>
+                    </div>
+                </div>
+
+                <!-- Mode Select Buttons -->
+                <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                    <button onclick="startGame(1)" class="btn-bounce bg-brandGreen hover:bg-emerald-500 text-white font-title text-xl py-4 px-6 rounded-2xl shadow-lg flex items-center justify-center gap-3 transition">
+                        <i class="fa-solid fa-user text-2xl"></i> 1 Pemain (Solo)
+                    </button>
+                    <button onclick="startGame(2)" class="btn-bounce bg-brandOrange hover:bg-amber-500 text-white font-title text-xl py-4 px-6 rounded-2xl shadow-lg flex items-center justify-center gap-3 transition">
+                        <i class="fa-solid fa-users text-2xl"></i> 2 Pemain (2 Bilah Layar)
+                    </button>
+                </div>
+            </div>
+
+            <!-- 2. GAME SCREEN (SPLIT VIEW READY) -->
+            <div id="screen-game" class="hidden bg-white/90 backdrop-blur-md rounded-3xl p-3 md:p-6 shadow-2xl border-4 border-brandYellow relative">
+                
+                <!-- TOP BAR (Global Timer & Controls) -->
+                <div class="flex items-center justify-between bg-slate-800 text-white p-3 rounded-2xl mb-4 shadow">
+                    <div class="flex items-center gap-2">
+                        <span class="text-2xl animate-float">⚽</span>
+                        <span class="font-title text-lg font-bold hidden sm:inline text-brandYellow">Petualangan Bola Ceria</span>
+                    </div>
+
+                    <!-- Global Timer Center -->
+                    <div class="flex items-center gap-2 bg-red-500/20 text-red-300 border border-red-500/40 px-4 py-1.5 rounded-xl font-title text-xl font-bold">
+                        <i class="fa-solid fa-clock"></i>
+                        <span id="timer-display">02:00</span>
+                    </div>
+
+                    <button onclick="confirmRestart()" class="bg-red-500/20 hover:bg-red-500 text-red-200 hover:text-white px-3 py-1.5 rounded-xl text-xs font-bold transition flex items-center gap-1">
+                        <i class="fa-solid fa-rotate-left"></i> <span class="hidden sm:inline">Ulangi</span>
+                    </button>
+                </div>
+
+                <!-- SPLIT CONTAINER (2 BILAH SOAL BERDAMPINGAN) -->
+                <div id="split-layout" class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                    
+                    <!-- BILAH PEMAIN 1 -->
+                    <div id="bilah-p1" class="bg-blue-50/80 border-4 border-brandBlue rounded-2xl p-3 sm:p-4 flex flex-col justify-between shadow-md relative">
+                        <div>
+                            <!-- Header Bilah P1 -->
+                            <div class="flex justify-between items-center bg-brandBlue text-white px-3 py-1.5 rounded-xl mb-3 shadow">
+                                <div class="flex items-center gap-2">
+                                    <span class="text-2xl">👦</span>
+                                    <span class="font-title font-bold text-base">Pemain 1</span>
+                                </div>
+                                <span id="p1-score-val" class="font-title text-lg bg-white/20 px-3 py-0.5 rounded-lg">0 Poin</span>
+                            </div>
+
+                            <div class="flex justify-between items-center text-[11px] text-blue-800 font-bold mb-1">
+                                <span id="p1-q-badge">Soal 1/10</span>
+                                <span id="p1-cat-badge" class="bg-blue-200/70 px-2 py-0.5 rounded-md">Category</span>
+                            </div>
+
+                            <h3 id="p1-q-text" class="text-sm sm:text-base font-bold text-gray-800 mb-3 leading-snug min-h-[40px]">
+                                Soal Pemain 1
+                            </h3>
+
+                            <!-- Dynamic Input Container P1 -->
+                            <div id="p1-options" class="space-y-2 mb-3">
+                                <!-- Generated Dynamically -->
+                            </div>
+                        </div>
+
+                        <!-- Feedback & Control P1 -->
+                        <div>
+                            <div id="p1-feedback" class="hidden p-3 rounded-xl text-xs font-bold text-center mb-2"></div>
+                            <button id="p1-btn-next" onclick="nextPlayerQuestion(1)" class="hidden btn-bounce w-full bg-brandBlue hover:bg-blue-600 text-white font-title text-sm py-2.5 px-4 rounded-xl shadow flex items-center justify-center gap-2">
+                                Soal Berikutnya <i class="fa-solid fa-arrow-right"></i>
+                            </button>
+                        </div>
+                    </div>
+
+                    <!-- BILAH PEMAIN 2 -->
+                    <div id="bilah-p2" class="bg-pink-50/80 border-4 border-brandRed rounded-2xl p-3 sm:p-4 flex flex-col justify-between shadow-md relative">
+                        <div>
+                            <!-- Header Bilah P2 -->
+                            <div class="flex justify-between items-center bg-brandRed text-white px-3 py-1.5 rounded-xl mb-3 shadow">
+                                <div class="flex items-center gap-2">
+                                    <span class="text-2xl">👧</span>
+                                    <span class="font-title font-bold text-base">Pemain 2</span>
+                                </div>
+                                <span id="p2-score-val" class="font-title text-lg bg-white/20 px-3 py-0.5 rounded-lg">0 Poin</span>
+                            </div>
+
+                            <div class="flex justify-between items-center text-[11px] text-pink-800 font-bold mb-1">
+                                <span id="p2-q-badge">Soal 1/10</span>
+                                <span id="p2-cat-badge" class="bg-pink-200/70 px-2 py-0.5 rounded-md">Category</span>
+                            </div>
+
+                            <h3 id="p2-q-text" class="text-sm sm:text-base font-bold text-gray-800 mb-3 leading-snug min-h-[40px]">
+                                Soal Pemain 2
+                            </h3>
+
+                            <!-- Dynamic Input Container P2 -->
+                            <div id="p2-options" class="space-y-2 mb-3">
+                                <!-- Generated Dynamically -->
+                            </div>
+                        </div>
+
+                        <!-- Feedback & Control P2 -->
+                        <div>
+                            <div id="p2-feedback" class="hidden p-3 rounded-xl text-xs font-bold text-center mb-2"></div>
+                            <button id="p2-btn-next" onclick="nextPlayerQuestion(2)" class="hidden btn-bounce w-full bg-brandRed hover:bg-red-600 text-white font-title text-sm py-2.5 px-4 rounded-xl shadow flex items-center justify-center gap-2">
+                                Soal Berikutnya <i class="fa-solid fa-arrow-right"></i>
+                            </button>
+                        </div>
+                    </div>
+
+                </div>
+            </div>
+
+            <!-- 3. RESULT / LEADERBOARD SCREEN -->
+            <div id="screen-result" class="hidden bg-white rounded-3xl p-6 md:p-8 shadow-2xl border-4 border-brandGreen text-center relative">
+                
+                <div class="text-5xl md:text-6xl mb-3 animate-float">🏆</div>
+                <h2 class="font-title text-3xl md:text-4xl text-brandBlue font-bold mb-1">
+                    Hasil Petualangan Bola!
+                </h2>
+                <p id="result-subtitle" class="text-gray-500 font-medium mb-6 text-sm md:text-base">
+                    Sesi permainan telah selesai. Luar biasa!
+                </p>
+
+                <!-- WINNER BANNER (2 Player Mode) -->
+                <div id="winner-box" class="hidden bg-yellow-100 border-2 border-yellow-400 text-yellow-900 rounded-2xl p-4 mb-6">
+                    <p class="text-xs font-bold uppercase tracking-wider text-yellow-700">Pemenang Pertandingan</p>
+                    <h3 id="winner-name" class="font-title text-2xl md:text-3xl font-bold text-brandOrange">Pemain 1 Menang! 🎉</h3>
+                </div>
+
+                <!-- SCORE BOARD SUMMARY -->
+                <div class="grid grid-cols-1 sm:grid-cols-2 gap-4 mb-6">
+                    <!-- P1 Score Result -->
+                    <div class="bg-blue-50 border-2 border-blue-200 rounded-2xl p-4 text-center">
+                        <div class="text-3xl mb-1">👦</div>
+                        <h4 class="font-title font-bold text-brandBlue">Pemain 1</h4>
+                        <p id="res-p1-score" class="text-3xl font-title font-bold text-gray-800 my-1">0</p>
+                        <p class="text-xs text-gray-500">Poin Akhir</p>
+                    </div>
+
+                    <!-- P2 Score Result -->
+                    <div id="res-p2-card" class="bg-pink-50 border-2 border-pink-200 rounded-2xl p-4 text-center">
+                        <div class="text-3xl mb-1">👧</div>
+                        <h4 class="font-title font-bold text-brandRed">Pemain 2</h4>
+                        <p id="res-p2-score" class="text-3xl font-title font-bold text-gray-800 my-1">0</p>
+                        <p class="text-xs text-gray-500">Poin Akhir</p>
+                    </div>
+                </div>
+
+                <!-- EDUCATIF EVALUATION SUMMARY -->
+                <div class="bg-emerald-50 border-2 border-emerald-200 rounded-2xl p-4 mb-6 text-left">
+                    <h4 class="font-title font-bold text-emerald-900 mb-2 flex items-center gap-2">
+                        <i class="fa-solid fa-award text-brandGreen"></i> Catatan Guru PJOK:
+                    </h4>
+                    <p id="eval-text" class="text-xs md:text-sm text-emerald-800">
+                        Pola gerak dasar manipulatif adalah kemampuan mengoperasikan benda (seperti bola) dengan tangan atau kaki. Tetaplah berlatih agar gerakan tubuhmu makin tangkas!
+                    </p>
+                </div>
+
+                <!-- ACTION BUTTONS -->
+                <div class="flex flex-col sm:flex-row gap-3 justify-center">
+                    <button onclick="resetToWelcome()" class="btn-bounce bg-brandYellow hover:bg-yellow-400 text-gray-800 font-title text-lg py-3 px-6 rounded-xl shadow flex items-center justify-center gap-2 transition">
+                        <i class="fa-solid fa-house"></i> Ke Menu Utama
+                    </button>
+                    <button onclick="restartGame()" class="btn-bounce bg-brandGreen hover:bg-emerald-600 text-white font-title text-lg py-3 px-6 rounded-xl shadow flex items-center justify-center gap-2 transition">
+                        <i class="fa-solid fa-rotate-right"></i> Main Lagi
+                    </button>
+                </div>
+            </div>
+
+        </div>
+    </main>
+
+    <!-- FOOTER -->
+    <footer class="text-center py-4 text-xs text-gray-500 font-semibold border-t border-gray-200 bg-white/50">
+        Media Pembelajaran Interaktif PJOK SD • Pola Gerak Dasar Manipulatif
+    </footer>
+
+    <!-- JAVASCRIPT LOGIC -->
+    <script>
+        /* --- QUESTION DATABASE WITH 3 MAIN QUESTION FORMATS --- */
+        const questionsData = [
+            // ------------------ BENTUK 1: PILIHAN GANDA (MCQ) ------------------
+            {
+                format: "mcq",
+                formatBadge: "1. Pilihan Ganda 📝",
+                category: "Melempar Bola (Literasi)",
+                question: "Bacalah cerita berikut:\n'Siti ingin mengoper bola kasti kepada rekannya yang jauh di ujung lapangan. Siti mengayunkan tangannya dari belakang bawah melengkung ke atas.'\nTeknik melempar apakah yang diterapkan Siti?",
+                options: [
+                    "Melempar bola menyusur tanah",
+                    "Melempar bola melambung",
+                    "Melempar bola mendatar",
+                    "Memantulkan bola ke lantai"
+                ],
+                correct: 1,
+                explanation: "Ayunan tangan dari belakang bawah ke atas menghasilkan bola melambung tinggi untuk jarak jauh."
+            },
+            {
+                format: "mcq",
+                formatBadge: "1. Pilihan Ganda 📝",
+                category: "Menangkap Bola (Numerasi)",
+                question: "Pak Guru memberi 20 kesempatan melempar bola melambung. Edo berhasil menangkap 16 bola. Berapakah jumlah bola yang gagal ditangkap Edo?",
+                options: [
+                    "2 bola",
+                    "4 bola",
+                    "5 bola",
+                    "6 bola"
+                ],
+                correct: 1,
+                explanation: "Hitungan Numerasi (Pengurangan): 20 total lemparan - 16 berhasil = 4 bola gagal ditangkap."
+            },
+            {
+                format: "mcq",
+                formatBadge: "1. Pilihan Ganda 📝",
+                category: "Gerak Manipulatif (Definisi)",
+                question: "Apakah yang dimaksud dengan pola gerak dasar manipulatif dalam pelajaran PJOK?",
+                options: [
+                    "Gerakan berpindah tempat tanpa membawa benda",
+                    "Gerakan tubuh memainkan atau mengoperasikan suatu benda/alat",
+                    "Gerakan diam di tempat menggelengkan kepala",
+                    "Gerakan tidur terlentang di atas matras"
+                ],
+                correct: 1,
+                explanation: "Gerak manipulatif adalah gerakan yang melibatkan penggunaan alat atau objek seperti bola, raket, atau pemukul."
+            },
+
+            // ------------------ BENTUK 2: PILIHAN GANDA KOMPLEKS (MULTIPLE SELECT) ------------------
+            {
+                format: "complex",
+                formatBadge: "2. PG Kompleks ☑️",
+                category: "Menendang Bola (Literasi & Variasi)",
+                question: "Centang 2 (DUA) jawaban BENAR mengenai bagian kaki yang biasa digunakan untuk menendang bola dalam permainan sepak bola!",
+                options: [
+                    "Kaki bagian dalam",
+                    "Punggung kaki (kura-kura kaki)",
+                    "Siku tangan kanan",
+                    "Lutut bagian depan"
+                ],
+                correct: [0, 1],
+                explanation: "Menendang bola dapat dilakukan menggunakan kaki bagian dalam, punggung kaki, maupun kaki bagian luar (bukan siku atau lutut)."
+            },
+            {
+                format: "complex",
+                formatBadge: "2. PG Kompleks ☑️",
+                category: "Gerak Manipulatif (Numerasi & Analisis)",
+                question: "Budi memantulkan bola basket dengan urutan pola numerasi: 5 kali, 10 kali, 15 kali, dan 20 kali. Centang 2 (DUA) pernyataan yang BENAR!",
+                options: [
+                    "Pola pantulan bertambah +5 pada setiap tahapan",
+                    "Total pantulan pada 2 set pertama adalah 15 kali",
+                    "Set ke-5 pasti berjumlah 30 pantulan",
+                    "Pola pantulan berkurang 5 kali setiap tahapan"
+                ],
+                correct: [0, 1],
+                explanation: "Pola bertambah +5 (5, 10, 15, 20). Total 2 set pertama = 5 + 10 = 15 kali."
+            },
+            {
+                format: "complex",
+                formatBadge: "2. PG Kompleks ☑️",
+                category: "Variasi Lemparan Bola (Teknik)",
+                question: "Centang 2 (DUA) teknik dasar melempar bola kasti yang benar di bawah ini!",
+                options: [
+                    "Lemparan melambung ke atas",
+                    "Lemparan menyusur tanah",
+                    "Lemparan menggunakan kepala",
+                    "Lemparan menggunakan kedua lutut"
+                ],
+                correct: [0, 1],
+                explanation: "Teknik dasar melempar bola kasti terdiri dari lemparan melambung, mendatar, dan menyusur tanah."
+            },
+
+            // ------------------ BENTUK 3: MENJODOHKAN / MENCOCOKKAN (INTERACTIVE MATCHING) ------------------
+            {
+                format: "matching",
+                formatBadge: "3. Menjodohkan 🔗",
+                category: "Gerakan & Bagian Tubuh",
+                question: "Jodohkan istilah gerakan manipulatif di kiri dengan bagian tubuh utama di kanan!",
+                leftItems: ["Menendang Bola", "Melempar & Menangkap"],
+                rightItems: ["Tangan", "Kaki"],
+                pairsMap: { 0: 1, 1: 0 }, // 0->1 ("Menendang"->"Kaki"), 1->0 ("Melempar"->"Tangan")
+                explanation: "Menendang bola menggunakan Kaki, sedangkan Melempar & Menangkap menggunakan Tangan."
+            },
+            {
+                format: "matching",
+                formatBadge: "3. Menjodohkan 🔗",
+                category: "Numerasi Bola & Kelompok",
+                question: "Cocokkan perkalian/pembagian bola di kiri dengan hasil jumlah bola di kanan!",
+                leftItems: ["4 kelompok @ 5 bola", "18 bola dibagi 3 pos"],
+                rightItems: ["6 bola per pos", "20 total bola"],
+                pairsMap: { 0: 1, 1: 0 },
+                explanation: "4 x 5 = 20 total bola. 18 / 3 = 6 bola per pos."
+            },
+            {
+                format: "matching",
+                formatBadge: "3. Menjodohkan 🔗",
+                category: "Arah Lemparan Bola",
+                question: "Jodohkan teknik melempar bola dengan lintasan arah jalannya bola!",
+                leftItems: ["Melempar Melambung", "Melempar Menyusur Tanah"],
+                rightItems: ["Tinggi ke atas udara", "Merambat sejajar tanah"],
+                pairsMap: { 0: 0, 1: 1 },
+                explanation: "Melempar melambung bergerak tinggi ke udara, sedangkan menyusur tanah merambat sejajar dengan tanah."
+            },
+            {
+                format: "matching",
+                formatBadge: "3. Menjodohkan 🔗",
+                category: "Peraturan & Alat Olahraga",
+                question: "Cocokkan nama permainan dengan jenis bola yang digunakan!",
+                leftItems: ["Sepak Bola", "Kasti"],
+                rightItems: ["Bola Kecil", "Bola Besar"],
+                pairsMap: { 0: 1, 1: 0 },
+                explanation: "Sepak bola termasuk olahraga bola besar, sedangkan kasti menggunakan bola kecil."
+            }
+        ];
+
+        /* --- GAME STATE VARIABLES --- */
+        let gameMode = 1;
+        let p1CurrentIdx = 0;
+        let p2CurrentIdx = 0;
+        let p1Score = 0;
+        let p2Score = 0;
+        let p1Finished = false;
+        let p2Finished = false;
+        let timerSeconds = 120;
+        let timerInterval = null;
+        let isAudioMuted = false;
+
+        // State for interactive matching (P1 & P2 separate selection states)
+        let matchingState = {
+            1: { selectedLeft: null, userPairs: {} },
+            2: { selectedLeft: null, userPairs: {} }
+        };
+
+        /* --- AUDIO SYNTHESIZER --- */
+        const AudioContext = window.AudioContext || window.webkitAudioContext;
+        let audioCtx = null;
+
+        function initAudio() {
+            if (!audioCtx) audioCtx = new AudioContext();
+        }
+
+        function playSound(type) {
+            if (isAudioMuted) return;
+            try {
+                initAudio();
+                const osc = audioCtx.createOscillator();
+                const gain = audioCtx.createGain();
+                osc.connect(gain);
+                gain.connect(audioCtx.destination);
+                const now = audioCtx.currentTime;
+
+                if (type === 'click') {
+                    osc.type = 'sine';
+                    osc.frequency.setValueAtTime(400, now);
+                    osc.frequency.exponentialRampToValueAtTime(800, now + 0.08);
+                    gain.gain.setValueAtTime(0.2, now);
+                    gain.gain.linearRampToValueAtTime(0.01, now + 0.08);
+                    osc.start(now);
+                    osc.stop(now + 0.08);
+                } else if (type === 'correct') {
+                    [523.25, 659.25, 783.99, 1046.50].forEach((f, index) => {
+                        const noteOsc = audioCtx.createOscillator();
+                        const noteGain = audioCtx.createGain();
+                        noteOsc.type = 'triangle';
+                        noteOsc.frequency.setValueAtTime(f, now + index * 0.08);
+                        noteGain.connect(audioCtx.destination);
+                        noteOsc.connect(noteGain);
+                        noteGain.gain.setValueAtTime(0.15, now + index * 0.08);
+                        noteGain.gain.linearRampToValueAtTime(0.01, now + index * 0.08 + 0.2);
+                        noteOsc.start(now + index * 0.08);
+                        noteOsc.stop(now + index * 0.08 + 0.2);
+                    });
+                } else if (type === 'wrong') {
+                    osc.type = 'sawtooth';
+                    osc.frequency.setValueAtTime(250, now);
+                    osc.frequency.linearRampToValueAtTime(150, now + 0.25);
+                    gain.gain.setValueAtTime(0.2, now);
+                    gain.gain.linearRampToValueAtTime(0.01, now + 0.25);
+                    osc.start(now);
+                    osc.stop(now + 0.25);
+                } else if (type === 'win') {
+                    [440, 554.37, 659.25, 880].forEach((f, i) => {
+                        const noteOsc = audioCtx.createOscillator();
+                        const noteGain = audioCtx.createGain();
+                        noteOsc.type = 'sine';
+                        noteOsc.frequency.setValueAtTime(f, now + i * 0.12);
+                        noteGain.connect(audioCtx.destination);
+                        noteOsc.connect(noteGain);
+                        noteGain.gain.setValueAtTime(0.2, now + i * 0.12);
+                        noteGain.gain.linearRampToValueAtTime(0.01, now + i * 0.12 + 0.3);
+                        noteOsc.start(now + i * 0.12);
+                        noteOsc.stop(now + i * 0.12 + 0.3);
+                    });
+                }
+            } catch (e) {
+                console.log("Audio API Error:", e);
+            }
+        }
+
+        function toggleSound() {
+            isAudioMuted = !isAudioMuted;
+            const icon = document.getElementById('sound-icon');
+            const text = document.getElementById('sound-text');
+            if (isAudioMuted) {
+                icon.className = 'fa-solid fa-volume-xmark';
+                text.textContent = 'Suara: OFF';
+            } else {
+                icon.className = 'fa-solid fa-volume-high';
+                text.textContent = 'Suara: ON';
+                playSound('click');
+            }
+        }
+
+        /* --- GAME ENGINE --- */
+        function startGame(mode) {
+            playSound('click');
+            gameMode = mode;
+            p1CurrentIdx = 0;
+            p2CurrentIdx = 0;
+            p1Score = 0;
+            p2Score = 0;
+            p1Finished = false;
+            p2Finished = false;
+            timerSeconds = 120;
+
+            const splitLayout = document.getElementById('split-layout');
+            const bilahP2 = document.getElementById('bilah-p2');
+
+            if (gameMode === 1) {
+                splitLayout.className = "grid grid-cols-1 max-w-2xl mx-auto";
+                bilahP2.classList.add('hidden');
+                p2Finished = true;
+            } else {
+                splitLayout.className = "grid grid-cols-1 md:grid-cols-2 gap-4";
+                bilahP2.classList.remove('hidden');
+            }
+
+            document.getElementById('screen-welcome').classList.add('hidden');
+            document.getElementById('screen-result').classList.add('hidden');
+            document.getElementById('screen-game').classList.remove('hidden');
+
+            updateScoreDisplay();
+            loadQuestionForPlayer(1);
+            if (gameMode === 2) loadQuestionForPlayer(2);
+
+            startTimer();
+        }
+
+        function startTimer() {
+            clearInterval(timerInterval);
+            updateTimerDisplay();
+
+            timerInterval = setInterval(() => {
+                timerSeconds--;
+                updateTimerDisplay();
+
+                if (timerSeconds <= 0) {
+                    clearInterval(timerInterval);
+                    endGame();
+                }
+            }, 1000);
+        }
+
+        function updateTimerDisplay() {
+            const minutes = Math.floor(timerSeconds / 60);
+            const seconds = timerSeconds % 60;
+            document.getElementById('timer-display').textContent = 
+                `${minutes.toString().padStart(2, '0')}:${seconds.toString().padStart(2, '0')}`;
+        }
+
+        function updateScoreDisplay() {
+            document.getElementById('p1-score-val').textContent = `${p1Score} Poin`;
+            document.getElementById('p2-score-val').textContent = `${p2Score} Poin`;
+        }
+
+        function loadQuestionForPlayer(pNum) {
+            const currentIdx = (pNum === 1) ? p1CurrentIdx : p2CurrentIdx;
+
+            if (currentIdx >= questionsData.length) {
+                if (pNum === 1) p1Finished = true;
+                if (pNum === 2) p2Finished = true;
+                
+                const qText = document.getElementById(`p${pNum}-q-text`);
+                const optionsCont = document.getElementById(`p${pNum}-options`);
+                qText.textContent = "🎉 Kamu telah menyelesaikan seluruh 3 bentuk soal!";
+                optionsCont.innerHTML = `<div class="bg-white/80 p-4 rounded-xl text-center text-sm font-bold text-emerald-700 border border-emerald-300">Menunggu sesi berakhir...</div>`;
+                document.getElementById(`p${pNum}-btn-next`).classList.add('hidden');
+                document.getElementById(`p${pNum}-feedback`).classList.add('hidden');
+
+                if (p1Finished && p2Finished) {
+                    endGame();
+                }
+                return;
+            }
+
+            const q = questionsData[currentIdx];
+            document.getElementById(`p${pNum}-q-badge`).textContent = `Soal ${currentIdx + 1} dari ${questionsData.length}`;
+            document.getElementById(`p${pNum}-cat-badge`).innerHTML = `<span class="font-bold text-brandBlue">${q.formatBadge}</span> • ${q.category}`;
+            document.getElementById(`p${pNum}-q-text`).textContent = q.question;
+
+            // Hide Feedback & Next Button
+            document.getElementById(`p${pNum}-feedback`).classList.add('hidden');
+            document.getElementById(`p${pNum}-btn-next`).classList.add('hidden');
+
+            const optionsContainer = document.getElementById(`p${pNum}-options`);
+            optionsContainer.innerHTML = '';
+
+            // RENDER BASED ON THE 3 MAIN FORMATS
+            if (q.format === 'mcq') {
+                renderMCQ(pNum, q, optionsContainer);
+            } else if (q.format === 'complex') {
+                renderComplex(pNum, q, optionsContainer);
+            } else if (q.format === 'matching') {
+                renderMatching(pNum, q, optionsContainer);
+            }
+        }
+
+        /* --- RENDERERS FOR THE 3 MAIN FORMATS --- */
+
+        // 1. PILIHAN GANDA (MCQ)
+        function renderMCQ(pNum, q, container) {
+            const labels = ['A', 'B', 'C', 'D'];
+            q.options.forEach((optText, i) => {
+                const btn = document.createElement('button');
+                btn.className = `p${pNum}-opt-btn btn-bounce w-full text-left p-2.5 sm:p-3 rounded-xl border-2 border-slate-200 bg-white font-medium text-gray-700 transition flex items-center gap-2.5 shadow-sm text-xs sm:text-sm hover:border-gray-400`;
+                btn.onclick = () => checkMCQAnswer(pNum, i);
+
+                btn.innerHTML = `
+                    <span class="w-6 h-6 rounded-lg bg-gray-100 font-title font-bold flex items-center justify-center text-xs shrink-0 border border-gray-300">
+                        ${labels[i]}
+                    </span>
+                    <span class="font-semibold leading-tight">${optText}</span>
+                `;
+                container.appendChild(btn);
+            });
+        }
+
+        function checkMCQAnswer(pNum, selectedIdx) {
+            const currentIdx = (pNum === 1) ? p1CurrentIdx : p2CurrentIdx;
+            const q = questionsData[currentIdx];
+            const buttons = document.querySelectorAll(`.p${pNum}-opt-btn`);
+
+            buttons.forEach(b => b.disabled = true);
+            const isCorrect = (selectedIdx === q.correct);
+
+            if (isCorrect) {
+                buttons[selectedIdx].className = buttons[selectedIdx].className.replace('bg-white border-slate-200', 'bg-emerald-100 border-emerald-500 text-emerald-900');
+            } else {
+                buttons[selectedIdx].className = buttons[selectedIdx].className.replace('bg-white border-slate-200', 'bg-red-100 border-red-500 text-red-900');
+                buttons[q.correct].className = buttons[q.correct].className.replace('bg-white border-slate-200', 'bg-emerald-100 border-emerald-500 text-emerald-900');
+            }
+
+            processResult(pNum, isCorrect, q.explanation);
+        }
+
+        // 2. PILIHAN GANDA KOMPLEKS (CHECKBOXES)
+        function renderComplex(pNum, q, container) {
+            q.options.forEach((optText, i) => {
+                const label = document.createElement('label');
+                label.className = `w-full text-left p-2.5 rounded-xl border-2 border-slate-200 bg-white font-medium text-gray-700 flex items-center gap-3 text-xs sm:text-sm cursor-pointer hover:bg-slate-50`;
+                label.innerHTML = `
+                    <input type="checkbox" value="${i}" class="p${pNum}-complex-cb w-4 h-4 rounded text-brandBlue focus:ring-brandBlue">
+                    <span class="font-semibold">${optText}</span>
+                `;
+                container.appendChild(label);
+            });
+
+            const submitBtn = document.createElement('button');
+            submitBtn.className = `btn-bounce w-full bg-brandPurple hover:bg-purple-700 text-white font-title text-xs sm:text-sm py-2 px-4 rounded-xl shadow mt-2 flex items-center justify-center gap-2`;
+            submitBtn.innerHTML = `<i class="fa-solid fa-paper-plane"></i> Kirim Jawaban (Centang Multiple)`;
+            submitBtn.onclick = () => checkComplexAnswer(pNum);
+            container.appendChild(submitBtn);
+        }
+
+        function checkComplexAnswer(pNum) {
+            const currentIdx = (pNum === 1) ? p1CurrentIdx : p2CurrentIdx;
+            const q = questionsData[currentIdx];
+            const checkboxes = document.querySelectorAll(`.p${pNum}-complex-cb`);
+            
+            const selected = [];
+            checkboxes.forEach(cb => {
+                if (cb.checked) selected.push(parseInt(cb.value));
+                cb.disabled = true;
+            });
+
+            // Compare arrays
+            const isCorrect = (selected.length === q.correct.length) && 
+                              selected.every(val => q.correct.includes(val));
+
+            processResult(pNum, isCorrect, q.explanation);
+        }
+
+        // 3. MENJODOHKAN / MENCOCOKKAN (INTERACTIVE MATCHING PAIRS)
+        function renderMatching(pNum, q, container) {
+            // Reset matching state for this player
+            matchingState[pNum] = { selectedLeft: null, userPairs: {} };
+
+            const instruction = document.createElement('p');
+            instruction.className = "text-[11px] font-bold text-emerald-800 bg-emerald-50 p-2 rounded-lg border border-emerald-200 mb-2";
+            instruction.innerHTML = "💡 <b>Cara Mencocokkan:</b> Klik 1 item di kolom Kiri, lalu klik pasangannya di kolom Kanan!";
+            container.appendChild(instruction);
+
+            const grid = document.createElement('div');
+            grid.className = "grid grid-cols-2 gap-2 text-xs mb-2";
+
+            // Left Column
+            const leftCol = document.createElement('div');
+            leftCol.className = "space-y-2";
+            q.leftItems.forEach((item, lIdx) => {
+                const btn = document.createElement('button');
+                btn.id = `p${pNum}-match-left-${lIdx}`;
+                btn.className = `p${pNum}-m-left w-full text-left p-2 rounded-xl border-2 border-slate-300 bg-white font-bold text-gray-700 hover:border-brandBlue transition flex flex-col justify-between shadow-sm`;
+                btn.onclick = () => selectMatchingLeft(pNum, lIdx);
+                btn.innerHTML = `
+                    <span>${item}</span>
+                    <span id="p${pNum}-badge-left-${lIdx}" class="text-[10px] text-gray-400 font-semibold mt-1">Pilih ini...</span>
+                `;
+                leftCol.appendChild(btn);
+            });
+
+            // Right Column
+            const rightCol = document.createElement('div');
+            rightCol.className = "space-y-2";
+            q.rightItems.forEach((item, rIdx) => {
+                const btn = document.createElement('button');
+                btn.id = `p${pNum}-match-right-${rIdx}`;
+                btn.className = `p${pNum}-m-right w-full text-left p-2 rounded-xl border-2 border-slate-300 bg-white font-bold text-gray-700 hover:border-brandBlue transition flex flex-col justify-between shadow-sm`;
+                btn.onclick = () => selectMatchingRight(pNum, rIdx);
+                btn.innerHTML = `
+                    <span>${item}</span>
+                    <span id="p${pNum}-badge-right-${rIdx}" class="text-[10px] text-gray-400 font-semibold mt-1">Pasangan...</span>
+                `;
+                rightCol.appendChild(btn);
+            });
+
+            grid.appendChild(leftCol);
+            grid.appendChild(rightCol);
+            container.appendChild(grid);
+
+            // Submit Button
+            const submitBtn = document.createElement('button');
+            submitBtn.className = `btn-bounce w-full bg-brandGreen hover:bg-emerald-600 text-white font-title text-xs sm:text-sm py-2 px-4 rounded-xl shadow mt-1 flex items-center justify-center gap-2`;
+            submitBtn.innerHTML = `<i class="fa-solid fa-link"></i> Periksa Hasil Cocokkan`;
+            submitBtn.onclick = () => checkMatchingAnswer(pNum);
+            container.appendChild(submitBtn);
+        }
+
+        function selectMatchingLeft(pNum, lIdx) {
+            playSound('click');
+            matchingState[pNum].selectedLeft = lIdx;
+
+            const currentIdx = (pNum === 1) ? p1CurrentIdx : p2CurrentIdx;
+            const q = questionsData[currentIdx];
+
+            q.leftItems.forEach((_, idx) => {
+                const btn = document.getElementById(`p${pNum}-match-left-${idx}`);
+                const badge = document.getElementById(`p${pNum}-badge-left-${idx}`);
+                if (idx === lIdx) {
+                    btn.className = btn.className.replace(/border-slate-300|border-emerald-500/, 'border-brandBlue bg-blue-50');
+                    badge.textContent = "👉 Terpilih";
+                    badge.className = "text-[10px] text-brandBlue font-bold mt-1";
+                } else if (matchingState[pNum].userPairs[idx] === undefined) {
+                    btn.className = btn.className.replace(/border-brandBlue|bg-blue-50/, 'border-slate-300 bg-white');
+                    badge.textContent = "Pilih ini...";
+                    badge.className = "text-[10px] text-gray-400 font-semibold mt-1";
+                }
+            });
+        }
+
+        function selectMatchingRight(pNum, rIdx) {
+            const selLeft = matchingState[pNum].selectedLeft;
+            if (selLeft === null || selLeft === undefined) {
+                alert("Klik item di kolom Kiri terlebih dahulu!");
+                return;
+            }
+
+            playSound('click');
+            matchingState[pNum].userPairs[selLeft] = rIdx;
+
+            const currentIdx = (pNum === 1) ? p1CurrentIdx : p2CurrentIdx;
+            const q = questionsData[currentIdx];
+
+            // Highlight left paired item
+            const leftBtn = document.getElementById(`p${pNum}-match-left-${selLeft}`);
+            const leftBadge = document.getElementById(`p${pNum}-badge-left-${selLeft}`);
+            leftBtn.className = "p" + pNum + "-m-left w-full text-left p-2 rounded-xl border-2 border-emerald-500 bg-emerald-50 font-bold text-gray-700 shadow-sm";
+            leftBadge.textContent = `🔗 Cocok dengan #${rIdx + 1}`;
+            leftBadge.className = "text-[10px] text-emerald-700 font-bold mt-1";
+
+            // Highlight right paired item
+            const rightBtn = document.getElementById(`p${pNum}-match-right-${rIdx}`);
+            const rightBadge = document.getElementById(`p${pNum}-badge-right-${rIdx}`);
+            rightBtn.className = "p" + pNum + "-m-right w-full text-left p-2 rounded-xl border-2 border-emerald-500 bg-emerald-50 font-bold text-gray-700 shadow-sm";
+            rightBadge.textContent = `🔗 Terhubung #${rIdx + 1}`;
+            rightBadge.className = "text-[10px] text-emerald-700 font-bold mt-1";
+
+            matchingState[pNum].selectedLeft = null;
+        }
+
+        function checkMatchingAnswer(pNum) {
+            const currentIdx = (pNum === 1) ? p1CurrentIdx : p2CurrentIdx;
+            const q = questionsData[currentIdx];
+            const userPairs = matchingState[pNum].userPairs;
+
+            // Check if all left items paired
+            if (Object.keys(userPairs).length < q.leftItems.length) {
+                alert("Harap hubungkan SEMUA item kiri ke pasangan kanannya!");
+                return;
+            }
+
+            // Disable all matching buttons
+            document.querySelectorAll(`.p${pNum}-m-left, .p${pNum}-m-right`).forEach(btn => btn.disabled = true);
+
+            let isCorrect = true;
+            for (let lIdx in q.pairsMap) {
+                if (userPairs[lIdx] !== q.pairsMap[lIdx]) {
+                    isCorrect = false;
+                    break;
+                }
+            }
+
+            processResult(pNum, isCorrect, q.explanation);
+        }
+
+        /* --- COMMON RESULT PROCESSOR --- */
+        function processResult(pNum, isCorrect, explanation) {
+            const fbPanel = document.getElementById(`p${pNum}-feedback`);
+            const btnNext = document.getElementById(`p${pNum}-btn-next`);
+
+            fbPanel.classList.remove('hidden');
+
+            if (isCorrect) {
+                playSound('correct');
+                if (pNum === 1) p1Score += 10;
+                else p2Score += 10;
+                updateScoreDisplay();
+
+                fbPanel.className = "p-3 rounded-xl text-xs font-bold text-center mb-2 bg-emerald-100 text-emerald-900 border border-emerald-300";
+                fbPanel.innerHTML = `<div>✨ Jawaban Kamu Tepat! (+10 Poin)</div><div class="font-normal text-[11px] mt-0.5">${explanation}</div>`;
+            } else {
+                playSound('wrong');
+                fbPanel.className = "p-3 rounded-xl text-xs font-bold text-center mb-2 bg-red-100 text-red-900 border border-red-300";
+                fbPanel.innerHTML = `<div>Ups, Kurang Tepat!</div><div class="font-normal text-[11px] mt-0.5">${explanation}</div>`;
+            }
+
+            btnNext.classList.remove('hidden');
+        }
+
+        function nextPlayerQuestion(pNum) {
+            playSound('click');
+            if (pNum === 1) p1CurrentIdx++;
+            else p2CurrentIdx++;
+            
+            loadQuestionForPlayer(pNum);
+        }
+
+        function endGame() {
+            clearInterval(timerInterval);
+            playSound('win');
+
+            confetti({
+                particleCount: 120,
+                spread: 80,
+                origin: { y: 0.6 }
+            });
+
+            document.getElementById('screen-game').classList.add('hidden');
+            document.getElementById('screen-result').classList.remove('hidden');
+
+            document.getElementById('res-p1-score').textContent = `${p1Score} Poin`;
+            document.getElementById('res-p2-score').textContent = `${p2Score} Poin`;
+
+            const winnerBox = document.getElementById('winner-box');
+            const winnerName = document.getElementById('winner-name');
+            const resP2Card = document.getElementById('res-p2-card');
+
+            if (gameMode === 2) {
+                winnerBox.classList.remove('hidden');
+                resP2Card.classList.remove('hidden');
+                if (p1Score > p2Score) {
+                    winnerName.textContent = "Pemain 1 Menang! 🏆";
+                    winnerName.className = "font-title text-2xl md:text-3xl font-bold text-brandBlue";
+                } else if (p2Score > p1Score) {
+                    winnerName.textContent = "Pemain 2 Menang! 🏆";
+                    winnerName.className = "font-title text-2xl md:text-3xl font-bold text-brandRed";
+                } else {
+                    winnerName.textContent = "Hasil Seri! Luar Biasa! 🤝";
+                    winnerName.className = "font-title text-2xl md:text-3xl font-bold text-brandPurple";
+                }
+            } else {
+                winnerBox.classList.add('hidden');
+                resP2Card.classList.add('hidden');
+            }
+
+            const evalText = document.getElementById('eval-text');
+            if (p1Score >= 80 || p2Score >= 80) {
+                evalText.textContent = "Luar Biasa! Kemampuan menguasai 3 bentuk soal (Pilihan Ganda, PG Kompleks, dan Menjodohkan) pada materi PJOK gerak manipulatif sangat prima!";
+            } else {
+                evalText.textContent = "Bagus! Terus berlatih memahami variasi bentuk soal literasi dan numerasi seputar gerak manipulatif bola agar kemampuanmu semakin hebat!";
+            }
+        }
+
+        function confirmRestart() {
+            if (confirm("Apakah kamu yakin ingin mengulang permainan dari awal?")) {
+                restartGame();
+            }
+        }
+
+        function restartGame() {
+            startGame(gameMode);
+        }
+
+        function resetToWelcome() {
+            playSound('click');
+            clearInterval(timerInterval);
+            document.getElementById('screen-game').classList.add('hidden');
+            document.getElementById('screen-result').classList.add('hidden');
+            document.getElementById('screen-welcome').classList.remove('hidden');
+        }
+    </script>
+</body>
+</html>
